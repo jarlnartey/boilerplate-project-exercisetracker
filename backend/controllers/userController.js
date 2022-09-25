@@ -21,7 +21,7 @@ const getUsers = (req, res) => {
             let userObject = { _id: user._id, username: user.username }
             allUsers.push(userObject)
         })
-        res.send(allUsers)
+        res.json(allUsers)
     })
 }
 
@@ -33,16 +33,16 @@ const addExercises = (req, res) => {
     let duration = parseInt(req.body.duration)
     let date = req.body.date
 
-    if (!date) { date = new Date().toISOString().split("T")[0] }
+    if (!date) { date = new Date().toDateString() }
 
-    const exercise = new Exercise({ description: description, duration: duration, date: new Date(date).toISOString().split("T")[0] })
+    const exercise = new Exercise({ description: description, duration: duration, date: new Date(date).toDateString() })
 
     User.findByIdAndUpdate(id, { $push: { log: exercise } }, { new: true }, (err, result) => {
         if (err) { }
         res.json({
             _id: result._id,
             username: result.username,
-            date: exercise.date,
+            date: new Date(exercise.date).toDateString(),
             duration: exercise.duration,
             description: exercise.description
         })
